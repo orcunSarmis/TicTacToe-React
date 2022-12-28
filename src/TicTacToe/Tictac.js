@@ -3,7 +3,8 @@ import "./Tictac.css";
 
 const Tictac = () => {
   const [turn, setTurn] = useState("x");
-  const [cells, setCells] = useState(Array(9).fill(''));
+  const [cells, setCells] = useState(Array(9).fill(""));
+  const [winner, setWinner] = useState();
 
   const checkForWinner = (squares) => {
     let combos = {
@@ -20,26 +21,43 @@ const Tictac = () => {
       diagnol: [
         [0, 4, 8],
         [2, 4, 6],
-      ]
+      ],
+    };
+
+    for (let combo in combos) {
+      combos[combo].forEach((pattern) => {
+        if (
+          squares[pattern[0]] === "" ||
+          squares[pattern[1]] === "" ||
+          squares[pattern[2]] === ""
+        ) {
+          // do nothing
+        } else if (
+          squares[pattern[0]] === squares[pattern[1]] &&
+          squares[pattern[0]] === squares[pattern[2]]
+        ) {
+          setWinner(squares[pattern[0]]);
+        }
+      });
     }
-  }
+  };
 
   const handleClick = (num) => {
-    if (cells[num] !== '') {
-      alert('already clicked');
+    if (cells[num] !== "") {
+      alert("already clicked");
       return;
     }
     let squares = [...cells];
 
     if (turn === "x") {
-      squares[num] = 'x';
+      squares[num] = "x";
       setTurn("o");
     } else {
-      squares[num] = 'o';
-      setTurn('x');
+      squares[num] = "o";
+      setTurn("x");
     }
 
-    checkForWinner(squares); 
+    checkForWinner(squares);
     setCells(squares);
   };
 
@@ -69,6 +87,14 @@ const Tictac = () => {
           </tr>
         </tbody>
       </table>
+      {winner && (
+        <>
+          <p>{winner} is the winner!</p>
+          <button>
+            Play Again!
+          </button>
+        </>
+      )}
     </div>
   );
 };
